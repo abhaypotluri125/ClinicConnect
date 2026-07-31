@@ -9,6 +9,10 @@ import { SanitizationWidget } from "@/components/clinic/sanitization-widget";
 import { PricingCard } from "@/components/clinic/pricing-card";
 import { MapCard } from "@/components/clinic/map-card";
 import { VideoCard } from "@/components/clinic/video-card";
+import { getSanitizationStatus } from "@/services/clinic.service";
+import { getClinicServices } from "@/services/clinic.service";
+import { PricingTable } from "@/components/clinic/pricing-table";
+import { ClinicHeader } from "@/components/clinic/clinic-header";
 
 export default async function ClinicPage({
   params,
@@ -18,45 +22,24 @@ export default async function ClinicPage({
   const { id } = await params;
 
   const clinic = await getClinic(id);
+  const services = await getClinicServices(id);
   const reviews = await getClinicReviews(id);
+  const sanitization = await getSanitizationStatus(id);
+  console.log("Sanitization data:", sanitization);
 
   return (
-    <main className="mx-auto max-w-6xl px-6 py-12">
+    <main className="min-h-screen bg-gradient-to-b from-blue-50/50 to-white px-6 py-12">
       {/* Header */}
-      <section>
-        <h1 className="text-4xl font-bold">
-          {clinic.name}
-        </h1>
-
-        <p className="mt-2 text-gray-600">
-          {clinic.address}, {clinic.city}
-        </p>
-
-        <div className="mt-6 flex flex-wrap gap-3">
-          <Badge>
-            ₹{clinic.consultation_fee} Consultation
-          </Badge>
-
-          {clinic.verified && (
-            <Badge>
-              ✅ Verified Clinic
-            </Badge>
-          )}
-        </div>
-      </section>
+      <ClinicHeader clinic={clinic} />
 
       {/* Overview */}
       <section className="mt-10 rounded-xl border p-8">
         <h2 className="text-2xl font-semibold">
           Clinic Overview
         </h2>
-
-        <p className="mt-4 text-gray-600">
-          This page will display reviews,
-          sanitization status, Google Maps,
-          YouTube videos, pricing information,
-          and directions to the clinic.
-        </p>
+        <PricingTable
+          services={services}
+        />
       </section>
       
       {/* Rating Summary */}
@@ -66,10 +49,11 @@ export default async function ClinicPage({
 
       {/* Sanitization */}
       <section className="mt-6">
-        <SanitizationWidget
-          completed={4}
-          target={5}
-        />
+        {sanitization && (
+          <SanitizationWidget
+            data={sanitization}
+          />
+        )}
       </section>
 
       {/* Pricing */}

@@ -1,11 +1,16 @@
 export interface Clinic {
   id: number;
   name: string;
-  address: string;
   city: string;
+  address: string;
   consultation_fee: number;
   verified: boolean;
-  latitude: number;
-  longitude: number;
-  youtube_url?: string;
+
+  rating?: number;
+  review_count?: number;
+
+  sanitization_logs?: {
+    completed_count: number;
+    target_count: number;
+  }[];
 }

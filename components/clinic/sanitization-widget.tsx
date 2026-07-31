@@ -1,39 +1,45 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { SanitizationLog } from "@/types/sanitization";
 
-type Props = {
-  completed: number;
-  target: number;
-};
 
 export function SanitizationWidget({
-  completed,
-  target,
-}: Props) {
-  const percentage = (completed / target) * 100;
+  data,
+}: {
+  data: SanitizationLog;
+}) {
+
+  const percentage =
+    (data.completed_count / data.target_count) * 100;
+
 
   return (
     <Card>
       <CardContent className="space-y-4 p-6">
-        <h2 className="text-xl font-semibold">
+
+        <h2 className="flex items-center gap-2 text-xl font-semibold text-teal-700">
           Today's Sanitization
         </h2>
 
+
         <Progress value={percentage} />
 
-        <div className="flex items-center justify-between">
-          <p className="text-gray-600">
-            Sanitized
-          </p>
+
+        <div className="flex justify-between">
+          <span>
+            Completed
+          </span>
 
           <strong>
-            {completed}/{target} Times
+            {data.completed_count}/{data.target_count}
           </strong>
         </div>
 
+
         <p className="text-sm text-gray-500">
-          Daily hygiene compliance
+          🧹 Daily hygiene compliance: {percentage}%
         </p>
+
       </CardContent>
     </Card>
   );
